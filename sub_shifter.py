@@ -4,22 +4,28 @@ import sys
 import ntpath
 
 
-def get_new_filename(path: str):
-    # get file name from the file path, create new filename with '_edited' at the end
-    orig_filename = ntpath.basename(path)
-    if '.' in orig_filename:
-        filename = orig_filename.rsplit(sep='.', maxsplit=1)
-        name = filename[0]
-        extention = filename[1]
-        return name + '_edited.' + extention 
+def get_original_filename(path: str):
+    # accepts full path, returns list, where 0=filename, [1]-extention
+    original_filename =  ntpath.basename(path)
+    if '.' in original_filename:
+        return original_filename.rsplit(sep='.', maxsplit=1)
     else:
-        return orig_filename + '_edited'
+        return [original_filename, '']
 
 def get_original_folder(path: str):
     # save file in directory the original is
     # rename edited file as original, rename orig file as old (optional)
-    orig_filename = ntpath.basename(path)
+    orig_filename = get_original_filename(path)
     return path.replace(orig_filename, '')
+
+def get_new_filename(path: str):
+    # get file name from the file path, create new filename with '_edited' at the end
+    orig_filename = get_original_filename(path)
+    new_file_list = [(orig_filename[0] + '_edited'), orig_filename[1]]
+    if new_file_list[1]:
+        return '.'.join(new_file_list)
+    else:
+        return new_file_list[0]
 
 def find_timestamps(line: str):
     # find all occurances of timestamps
@@ -75,11 +81,3 @@ def main(*args):
 # if __name__ == '__main__':
 #     main(sys.argv)
 
-
-
-print(get_new_filename(''))
-
-
-path = r'E:\!MOVIES\Elsewhere (2009) [720p] [BluRay] [YTS.MX]\Elsewhere.2009.720p.BluRay.x264.AAC-[YTS.MX].srt'
-
-main(path, '+12')

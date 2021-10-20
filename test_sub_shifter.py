@@ -21,8 +21,7 @@ def test_blank_str():
     assert sub_shifter.get_new_filename('') == '_edited'
 
 def test_path_only_dot():
-    # need to change function to check len of extention
-    assert sub_shifter.get_new_filename('.') == '_edited.'
+    assert sub_shifter.get_new_filename('.') == '_edited'
 
 def test_valid_path_win():
     path = r'E:\python_proj\subtitle_timing_changer\sub_shifter.py' 
@@ -47,4 +46,4 @@ def test_file_without_extention():
 def test_relative_path():
     path = r'..pytest_cache\v\cache\last_failed'
     assert sub_shifter.get_new_filename(path) == 'last_failed_edited'
-    
+
