@@ -7,13 +7,19 @@ import ntpath
 def get_new_filename(path: str):
     # get file name from the file path, create new filename with '_edited' at the end
     orig_filename = ntpath.basename(path)
-    if '.' in path:
-        filename = orig_filename.split('.')
+    if '.' in orig_filename:
+        filename = orig_filename.rsplit(sep='.', maxsplit=1)
         name = filename[0]
         extention = filename[1]
         return name + '_edited.' + extention 
     else:
         return orig_filename + '_edited'
+
+def get_original_folder(path: str):
+    # save file in directory the original is
+    # rename edited file as original, rename orig file as old (optional)
+    orig_filename = ntpath.basename(path)
+    return path.replace(orig_filename, '')
 
 def find_timestamps(line: str):
     # find all occurances of timestamps
@@ -60,7 +66,8 @@ def main(*args):
                     new_time = edit_time(old_time, operation, value)
                     new_string = convert_time_to_string(new_time)
                     line_copy = line_copy.replace(timestamp, new_string)
-            with open(get_new_filename(path), 'a') as fixed_file:
+            save_path = get_original_folder(path) + get_new_filename(path)
+            with open(save_path, 'a') as fixed_file:
                 fixed_file.write(line_copy)
 
 
@@ -71,3 +78,8 @@ def main(*args):
 
 
 print(get_new_filename(''))
+
+
+path = r'E:\!MOVIES\Elsewhere (2009) [720p] [BluRay] [YTS.MX]\Elsewhere.2009.720p.BluRay.x264.AAC-[YTS.MX].srt'
+
+main(path, '+12')

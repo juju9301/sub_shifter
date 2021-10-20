@@ -37,12 +37,14 @@ def test_valid_path_mac():
     assert sub_shifter.get_new_filename(path) == 'Marketing_edited'
 
 def test_file_with_extention():
+    # present in other testcases
     pass
 
 def test_file_without_extention():
+    # present in other testcases
     pass
 
 def test_relative_path():
-    # currently test fails, should modify the fumction
-    path = r'..pytest_cache\v\cache\lastfailed'
+    path = r'..pytest_cache\v\cache\last_failed'
     assert sub_shifter.get_new_filename(path) == 'last_failed_edited'
+    
