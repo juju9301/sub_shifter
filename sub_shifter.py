@@ -20,8 +20,8 @@ def get_original_filename(path: str):
 def get_original_folder(path: str):
     # save file in directory the original is
     # rename edited file as original, rename orig file as old (optional)
-    orig_filename = get_original_filename(path)
-    return path.replace(orig_filename, '')
+    original_filename =  ntpath.basename(path)
+    return path.replace(original_filename, '')
 
 def get_new_filename(path: str):
     # get file name from the file path, create new filename with '_edited' at the end
@@ -101,8 +101,8 @@ if __name__ == '__main__':
 
     passed_args = my_parser.parse_args()
     args_dict = vars(passed_args)
-    print(args_dict['Path'], args_dict['Amount'])
-    # main(path=args_dict['Path'], amount=args_dict['Amount'])
+
+    main(path=args_dict['Path'], amount=args_dict['Amount'])
     
 
 
