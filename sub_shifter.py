@@ -1,7 +1,12 @@
 import re
 import datetime
+import os
 import sys
+import argparse
 import ntpath
+
+
+
 
 
 def get_original_filename(path: str):
@@ -54,13 +59,11 @@ def validate_input(*args):
     pass
 
 
-def main(*args):
+def main(path, amount):
     # path is path to file
     # value should be string in format '+2' or '-67', in seconds
-    path = args[0]
-    value = args[1]
-    operation = value[0]
-    value = int(value[1:])
+    operation = amount[0]
+    seconds = int(amount[1:])
     with open(path, 'r') as file:
         content = file.readlines()
         for line in content:
@@ -69,7 +72,7 @@ def main(*args):
             if len(timestamps) > 0:
                 for timestamp in timestamps:
                     old_time = convert_string_to_time(timestamp)
-                    new_time = edit_time(old_time, operation, value)
+                    new_time = edit_time(old_time, operation, seconds)
                     new_string = convert_time_to_string(new_time)
                     line_copy = line_copy.replace(timestamp, new_string)
             save_path = get_original_folder(path) + get_new_filename(path)
@@ -78,6 +81,28 @@ def main(*args):
 
 
 
-# if __name__ == '__main__':
-#     main(sys.argv)
+if __name__ == '__main__':
+    # create a parser
+    my_parser = argparse.ArgumentParser(description='shifts subtitles forward or backward by value in seconds')
+
+    my_parser.set_defaults(method=main)
+
+    # add arguments to parser
+
+    my_parser.add_argument('Path',
+                            metavar='path',
+                            type=str,
+                            help='path to subtitle file')
+
+    my_parser.add_argument('Amount',
+                            metavar='amount',
+                            type=str,
+                            help='amount by which subs should be shifted, in seconds. For example "+3", "-16"')
+
+    passed_args = my_parser.parse_args()
+    args_dict = vars(passed_args)
+    print(args_dict['Path'], args_dict['Amount'])
+    # main(path=args_dict['Path'], amount=args_dict['Amount'])
+    
+
 
