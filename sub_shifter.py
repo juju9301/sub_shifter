@@ -6,9 +6,6 @@ import argparse
 import ntpath
 
 
-
-
-
 def get_original_filename(path: str):
     # accepts full path, returns list, where 0=filename, [1]-extention
     original_filename =  ntpath.basename(path)
@@ -89,20 +86,22 @@ if __name__ == '__main__':
 
     # add arguments to parser
 
-    my_parser.add_argument('Path',
+    my_parser.add_argument('path',
                             metavar='path',
                             type=str,
                             help='path to subtitle file')
 
-    my_parser.add_argument('Amount',
+    my_parser.add_argument('amount',
                             metavar='amount',
                             type=str,
                             help='amount by which subs should be shifted, in seconds. For example "+3", "-16"')
 
     passed_args = my_parser.parse_args()
+
+    subparsers = my_parser.add_subparsers()
+
     args_dict = vars(passed_args)
 
-    main(path=args_dict['Path'], amount=args_dict['Amount'])
-    
+    main(path=args_dict['path'], amount=args_dict['amount'])
 
 
