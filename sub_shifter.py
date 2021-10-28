@@ -15,7 +15,7 @@ def get_original_filename(path: str):
 def get_original_folder(path: str):
     # save file in directory the original is
     # rename edited file as original, rename orig file as old (optional)
-    orig_filename = get_original_filename(path)
+    orig_filename = ntpath.basename(path)
     return path.replace(orig_filename, '')
 
 def get_new_filename(path: str):
@@ -54,11 +54,11 @@ def validate_input(*args):
     pass
 
 
-def main(*args):
+def main(args):
     # path is path to file
     # value should be string in format '+2' or '-67', in seconds
-    path = args[0]
-    value = args[1]
+    path = args[1]
+    value = args[2]
     operation = value[0]
     value = int(value[1:])
     with open(path, 'r') as file:
@@ -78,6 +78,6 @@ def main(*args):
 
 
 
-# if __name__ == '__main__':
-#     main(sys.argv)
+if __name__ == '__main__':
+    main(sys.argv)
 
