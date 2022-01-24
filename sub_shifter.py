@@ -1,8 +1,24 @@
 import re
 import datetime
-import sys
+import sys, os
 import ntpath
+import logging
 
+
+def find_srt_files():
+    # find all srt files in folder, return error if none
+    files = []
+    current_path = os.getcwd()
+    for x in os.listdir(current_path):
+        if x.endswith('.ass') or x.endswith('.srt'):
+            files.append(x)
+    if len(files) == 1:
+        path = current_path + files[0]
+    elif len(files) == 0:
+        raise Exception('No subtitle file in current directory')
+    elif len(files) > 1:
+        raise Exception('There are multiple subtitle files in current directory. Please choose one to process')
+    return path
 
 def get_original_filename(path: str):
     # accepts full path, returns list, where 0=filename, [1]-extention
@@ -57,8 +73,17 @@ def validate_input(*args):
 def main(args):
     # path is path to file
     # value should be string in format '+2' or '-67', in seconds
-    path = args[1]
-    value = args[2]
+    if len(args) < 2:
+        try: 
+            path = find_srt_files()
+            value = args[1]
+        except Exception as error:
+            logging(error)
+    elif len(args) > 2:
+        raise Exception('too many arguments!!')
+    elif len(args) == 2:            
+        path = args[1]
+        value = args[2]
     operation = value[0]
     value = int(value[1:])
     with open(path, 'r') as file:
