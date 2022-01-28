@@ -2,7 +2,9 @@ import re
 import datetime
 import sys, os
 import ntpath
-import logging
+from my_logger import get_my_logger
+
+logger = get_my_logger(__name__)
 
 
 def find_srt_files():
@@ -13,11 +15,14 @@ def find_srt_files():
         if x.endswith('.ass') or x.endswith('.srt'):
             files.append(x)
     if len(files) == 1:
-        path = current_path + files[0]
+        f = files[0]
+        logging.info(f'file {f} will be processed')
+        path = current_path + '\\' + f
     elif len(files) == 0:
         raise Exception('No subtitle file in current directory')
     elif len(files) > 1:
-        raise Exception('There are multiple subtitle files in current directory. Please choose one to process')
+        raise Exception(f'Found {len(files)} files in current directory. Please choose one to process')
+    
     return path
 
 def get_original_filename(path: str):
@@ -61,29 +66,39 @@ def convert_time_to_string(time):
     # convert datetime object to string, to timestamp format
     return datetime.datetime.strftime(time, '%H:%M:%S')
 
-def validate_input(*args):
-    # validate arguments passed to main function
-    # -validate number of arguments
-    # -validate argument types
-    # - validate path is not '' and valid path
+def validate_input(string):
+    # validate value
+    try:
+        string[0] == '+' or string[0] == '-'
+    except Exception:
+        logging.error('Invalid operator!!')
+    finally:
+        if not string[1:].isnumeric():
+            logging.error('Value is not numeric')
 
-    pass
 
 
 def main(args):
     # path is path to file
     # value should be string in format '+2' or '-67', in seconds
-    if len(args) < 2:
+    print(f'args are {", ".join([a for a in args])}')
+    if len(args) < 3:
         try: 
             path = find_srt_files()
             value = args[1]
+        except IndexError:
+            logging.error('Please provide value!!')
+            return
         except Exception as error:
-            logging(error)
-    elif len(args) > 2:
+            logging.error(error)
+            return
+    elif len(args) > 3:
         raise Exception('too many arguments!!')
-    elif len(args) == 2:            
+        return
+    elif len(args) == 3:            
         path = args[1]
         value = args[2]
+    validate_input(value)
     operation = value[0]
     value = int(value[1:])
     with open(path, 'r') as file:
