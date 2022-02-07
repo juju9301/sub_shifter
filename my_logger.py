@@ -17,8 +17,8 @@ def get_my_logger(name):
     logger.addHandler(file_handler)
     logger.setLevel(logging.DEBUG)
 
-    logger.critical('critical')
-    logger.error('error')
-    logger.debug('debug')
-    logger.warning('warning')
-    logger.info('info')
+    # logger.critical('critical')
+    # logger.error('error')
+    # logger.debug('debug')
+    # logger.warning('warning')
+    # logger.info('info')
