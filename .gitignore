@@ -1,3 +1,4 @@
 __pycache__
-sub.srt
+.srt
 .pytest_cache
+.log
