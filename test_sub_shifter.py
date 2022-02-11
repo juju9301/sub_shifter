@@ -47,3 +47,5 @@ def test_relative_path():
     path = r'..pytest_cache\v\cache\last_failed'
     assert sub_shifter.get_new_filename(path) == 'last_failed_edited'
 
+    # path = r"E:\!MOVIES\All.of.Us.Are.Dead.S01.WEBRip.Rus.HDRezka\An.Education.2009.720p.BluRay.x264.[YTS.MX]-English.srt"
+    # main([os.getcwd(), path, '+5'])
