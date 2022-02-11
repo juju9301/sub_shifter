@@ -3,6 +3,7 @@ import datetime
 import sys, os
 import ntpath
 from my_logger import get_my_logger
+import logging
 
 logger = get_my_logger(__name__)
 
@@ -25,28 +26,17 @@ def find_srt_files():
     
     return path
 
-def get_original_filename(path: str):
+def get_filename(path):
     # accepts full path, returns list, where 0=filename, [1]-extention
-    original_filename =  ntpath.basename(path)
-    if '.' in original_filename:
-        return original_filename.rsplit(sep='.', maxsplit=1)
-    else:
-        return [original_filename, '']
+    output = {
+        }
+    
 
-def get_original_folder(path: str):
+def get_directory(path):
     # save file in directory the original is
     # rename edited file as original, rename orig file as old (optional)
     orig_filename = ntpath.basename(path)
-    return path.replace(orig_filename, '')
-
-def get_new_filename(path: str):
-    # get file name from the file path, create new filename with '_edited' at the end
-    orig_filename = get_original_filename(path)
-    new_file_list = [(orig_filename[0] + '_edited'), orig_filename[1]]
-    if new_file_list[1]:
-        return '.'.join(new_file_list)
-    else:
-        return new_file_list[0]
+    return 
 
 def find_timestamps(line: str):
     # find all occurances of timestamps
@@ -101,6 +91,14 @@ def main(args):
     validate_input(value)
     operation = value[0]
     value = int(value[1:])
+
+    full_filename = ntpath.basename(path)    
+    directory = path.replace(full_filename, '')
+    if '.' in full_filename:
+        filename, extension = full_filename.rsplit(sep='.', maxsplit=1)
+    else:
+        filename, extension = full_filename, ''
+    save_path = directory + '.'.join(['temp', extension])
     with open(path, 'r') as file:
         content = file.readlines()
         for line in content:
@@ -112,12 +110,17 @@ def main(args):
                     new_time = edit_time(old_time, operation, value)
                     new_string = convert_time_to_string(new_time)
                     line_copy = line_copy.replace(timestamp, new_string)
-            save_path = get_original_folder(path) + get_new_filename(path)
             with open(save_path, 'a') as fixed_file:
                 fixed_file.write(line_copy)
-
+    # rename original file, add '_old' to name
+    old_file_name = directory + filename + '_old.' + extension
+    os.rename(path, old_file_name)
+    # rename new_file into original
+    new_file_name = save_path
+    os.rename(save_path, path)
 
 
 if __name__ == '__main__':
     main(sys.argv)
+
 
