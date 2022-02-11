@@ -1,5 +1,6 @@
 import re
 import datetime
+import argparse
 import sys, os
 import ntpath
 from my_logger import get_my_logger
@@ -35,8 +36,19 @@ def get_filename(path):
 def get_directory(path):
     # save file in directory the original is
     # rename edited file as original, rename orig file as old (optional)
-    orig_filename = ntpath.basename(path)
-    return 
+
+    original_filename =  ntpath.basename(path)
+    return path.replace(original_filename, '')
+
+def get_new_filename(path: str):
+    # get file name from the file path, create new filename with '_edited' at the end
+    orig_filename = get_original_filename(path)
+    new_file_list = [(orig_filename[0] + '_edited'), orig_filename[1]]
+    if new_file_list[1]:
+        return '.'.join(new_file_list)
+    else:
+        return new_file_list[0]
+
 
 def find_timestamps(line: str):
     # find all occurances of timestamps
@@ -65,8 +77,6 @@ def validate_input(string):
     finally:
         if not string[1:].isnumeric():
             logging.error('Value is not numeric')
-
-
 
 def main(args):
     # path is path to file
@@ -107,7 +117,7 @@ def main(args):
             if len(timestamps) > 0:
                 for timestamp in timestamps:
                     old_time = convert_string_to_time(timestamp)
-                    new_time = edit_time(old_time, operation, value)
+                    new_time = edit_time(old_time, operation, seconds)
                     new_string = convert_time_to_string(new_time)
                     line_copy = line_copy.replace(timestamp, new_string)
             with open(save_path, 'a') as fixed_file:
@@ -119,8 +129,31 @@ def main(args):
     new_file_name = save_path
     os.rename(save_path, path)
 
-
 if __name__ == '__main__':
-    main(sys.argv)
+    # create a parser
+    my_parser = argparse.ArgumentParser(description='shifts subtitles forward or backward by value in seconds')
+
+    my_parser.set_defaults(method=main)
+
+    # add arguments to parser
+
+    my_parser.add_argument('path',
+                            metavar='path',
+                            type=str,
+                            help='path to subtitle file')
+
+    my_parser.add_argument('amount',
+                            metavar='amount',
+                            type=str,
+                            help='amount by which subs should be shifted, in seconds. For example "+3", "-16"')
+
+    passed_args = my_parser.parse_args()
+
+    subparsers = my_parser.add_subparsers()
+
+    args_dict = vars(passed_args)
+
+    main(path=args_dict['path'], amount=args_dict['amount'])
+
 
 
