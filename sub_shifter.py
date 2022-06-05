@@ -42,11 +42,11 @@ def find_timestamps(line: str):
     # find all occurances of timestamps
     # looking for partial strings in format '00:13:14', 
     # ignores milliseconds
-    return re.findall(r'[0-9]+:[0-9]+:[0-9]+', line)
+    return re.findall(r'[0-9]+:[0-9]+:[0-9]+,[0-9]+', line)
 
 def convert_string_to_time(line: str):
     # convert string to datetime object
-    return datetime.datetime.strptime(line, '%H:%M:%S')
+    return datetime.datetime.strptime(line, '%H:%M:%S,%f')
 
 def edit_time(old_time, operation, value):
     # edit datetime object by addition or subtraction value in seconds
@@ -54,7 +54,7 @@ def edit_time(old_time, operation, value):
 
 def convert_time_to_string(time):
     # convert datetime object to string, to timestamp format
-    return datetime.datetime.strftime(time, '%H:%M:%S')
+    return datetime.datetime.strftime(time, '%H:%M:%S,%f')[:-3]
 
 def validate_input(string):
     # validate value
